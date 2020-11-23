@@ -22,14 +22,21 @@ class HomeController extends GetxController {
   List<ContactModel> get listContact => _listContact;
 
   Snapshot<List<AboutModel>> _listSnapAbout;
+  Snapshot<List<ContactModel>> _listSnapContact;
 
   @override
   void onInit() async {
     setLoading(true);
     await onStartControllerStream();
-    // await onStartController();
     setLoading(false);
     super.onInit();
+  }
+
+  @override
+  void onClose() async {
+    _listSnapAbout.close();
+    _listSnapContact.close();
+    super.onClose();
   }
 
   Future<void> onStartControllerStream({bool iUseLoading = false}) async {
@@ -37,39 +44,26 @@ class HomeController extends GetxController {
       setLoading(true);
     }
 
-    _listSnapAbout = await _repo.getSnapAbout();
+    _listSnapAbout ??= await _repo.getSnapAbout();
 
     if (_listSnapAbout != null) {
       _listSnapAbout.listen((List<AboutModel> data) {
-        // print('$data');
         _listAbout.value = data;
       });
-    } else {
-      print('List About Nula');
+    } 
+
+    _listSnapContact ??= await _repo.getSnapContact();
+
+    if (_listSnapContact != null) {
+      _listSnapContact.listen((List<ContactModel> data) => _listContact.value = data);
     }
 
-    // _listAbout.value = await _repo.getAboutTeste();
-
-    _listContact.value = await _repo.getContact();
-
-    if (iUseLoading) {
-      setLoading(false);
-    }
-  }
-
-  Future<void> onStartController({bool iUseLoading = false}) async {
-    if (iUseLoading) {
-      setLoading(true);
-    }
-    _listAbout.value = await _repo.getAbout();
-    _listContact.value = await _repo.getContact();
     if (iUseLoading) {
       setLoading(false);
     }
   }
 
   Future<void> onHomeRefresh() async {
-    // await onStartController();
     await Future.delayed(const Duration(seconds: 1));
   }
 }

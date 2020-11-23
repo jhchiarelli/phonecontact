@@ -25,7 +25,7 @@ class NotificationTile extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      '${_data.appname}',                      
+                      '${_data.appname} ${_data.appversion}',                      
                       maxLines: 1,
                       overflow: TextOverflow.fade,
                       style: TextStyle(
@@ -45,7 +45,13 @@ class NotificationTile extends StatelessWidget {
               ),
             ],
           ),
-          subtitle: Text('${_data.apppoweredby}'),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(child: Text('${_data.apppoweredby}')),
+              Text('${_data.appphone}'),
+            ],
+          ),
         ),
       ),
     );
